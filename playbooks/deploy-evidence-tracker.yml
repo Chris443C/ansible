@@ -1,0 +1,19 @@
+---
+- name: Deploy PCI DSS Evidence Tracker
+  hosts: webserver
+  become: yes
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Pull Docker Image
+      command: docker pull myrepo/evidence-tracker:latest
+
+    - name: Stop and Remove Old Container
+      command: docker rm -f evidence-tracker || true
+
+    - name: Run New Container
+      command: docker run -d --name evidence-tracker -p 5000:5000 myrepo/evidence-tracker:latest
